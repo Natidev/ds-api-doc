@@ -4,4 +4,4 @@ const { swaggerDocument, swaggerOptions } = require('./config');
 
 const app = express();
 app.listen(4000,()=>console.log("Running"))
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
