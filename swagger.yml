@@ -1,0 +1,555 @@
+openapi: 3.0.0
+info:
+  title: Personalized News Platform – API Contracts
+  version: 1.0.0
+  description: Combined OpenAPI specification for all microservices.
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/mindahun/NewsRecomendation/1.0.0
+  - url: http://localhost:8000
+    description: API Gateway
+paths:
+  /users:
+    post:
+      summary: Create User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{userId}:
+    get:
+      summary: Get User
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{userId}/preferences:
+    put:
+      summary: Update User Preferences
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPreferencesRequest'
+      responses:
+        '200':
+          description: Updated preferences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferencesResponse'
+  /users/{userId}/activity:
+    post:
+      summary: Log User Activity
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserActivityRequest'
+      responses:
+        '200':
+          description: Activity logged
+  /news:
+    post:
+      summary: Add News Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsCreateRequest'
+      responses:
+        '201':
+          description: News created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+    get:
+      summary: Get News by Category
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsArticle'
+  /news/{articleId}:
+    get:
+      summary: Get News Article
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: News article
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+  /news/latest:
+    get:
+      summary: Get Latest News
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Latest news
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsArticle'
+  /recommendations/{userId}:
+    get:
+      summary: Get Recommendations
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResponse'
+  /recommendations/update:
+    post:
+      summary: Trigger Recommendation Update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendationUpdateRequest'
+      responses:
+        '200':
+          description: Update triggered
+  /analytics/user-activity:
+    get:
+      summary: Get User Activity Analytics
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: to
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAnalytics'
+  /analytics/news-stats:
+    get:
+      summary: Get News Statistics
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: to
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: News stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsAnalytics'
+  /notifications/send:
+    post:
+      summary: Send Notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationSendRequest'
+      responses:
+        '200':
+          description: Notification sent
+  /notifications/preferences/{userId}:
+    put:
+      summary: Update Notification Preferences
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferencesRequest'
+      responses:
+        '200':
+          description: Preferences updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreferencesResponse'
+  /admin/categories:
+    post:
+      summary: Create News Category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCategoryRequest'
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+  /admin/categories/{categoryId}:
+    put:
+      summary: Update Category
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCategoryRequest'
+      responses:
+        '200':
+          description: Updated category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCategory'
+  /admin/news-sources:
+    post:
+      summary: Create News Source
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSourceRequest'
+      responses:
+        '201':
+          description: Source created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminSource'
+  /admin/news/{articleId}:
+    delete:
+      summary: Delete News Article
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted
+components:
+  schemas:
+    UserCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        preferences:
+          type: array
+          items:
+            type: string
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        preferences:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+    UserPreferencesRequest:
+      type: object
+      properties:
+        preferences:
+          type: array
+          items:
+            type: string
+    UserPreferencesResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        preferences:
+          type: array
+          items:
+            type: string
+        updatedAt:
+          type: string
+    UserActivityRequest:
+      type: object
+      properties:
+        articleId:
+          type: string
+        action:
+          type: string
+          enum:
+            - read
+            - like
+            - share
+        timestamp:
+          type: string
+    NewsCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+        author:
+          type: string
+        source:
+          type: string
+        publishedAt:
+          type: string
+    NewsArticle:
+      type: object
+      properties:
+        articleId:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+        author:
+          type: string
+        source:
+          type: string
+        publishedAt:
+          type: string
+        createdAt:
+          type: string
+    RecommendationResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        recommendedArticles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationItem'
+        generatedAt:
+          type: string
+    RecommendationItem:
+      type: object
+      properties:
+        articleId:
+          type: string
+        title:
+          type: string
+        category:
+          type: string
+        score:
+          type: number
+    RecommendationUpdateRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+    UserAnalytics:
+      type: object
+      properties:
+        userId:
+          type: string
+        totalArticlesRead:
+          type: integer
+        totalLikes:
+          type: integer
+        totalShares:
+          type: integer
+        mostReadCategories:
+          type: array
+          items:
+            type: string
+    NewsAnalytics:
+      type: object
+      properties:
+        category:
+          type: string
+        totalArticlesPublished:
+          type: integer
+        totalReads:
+          type: integer
+        topArticles:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopArticle'
+    TopArticle:
+      type: object
+      properties:
+        articleId:
+          type: string
+        reads:
+          type: integer
+    NotificationSendRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        message:
+          type: string
+        type:
+          type: string
+          enum:
+            - push
+            - email
+            - in-app
+    NotificationPreferencesRequest:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        types:
+          type: array
+          items:
+            type: string
+    NotificationPreferencesResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        enabled:
+          type: boolean
+        types:
+          type: array
+          items:
+            type: string
+        updatedAt:
+          type: string
+    AdminCategoryRequest:
+      type: object
+      properties:
+        categoryName:
+          type: string
+    AdminCategory:
+      type: object
+      properties:
+        categoryId:
+          type: string
+        categoryName:
+          type: string
+        createdAt:
+          type: string
+    AdminSourceRequest:
+      type: object
+      properties:
+        sourceName:
+          type: string
+        sourceUrl:
+          type: string
+    AdminSource:
+      type: object
+      properties:
+        sourceId:
+          type: string
+        sourceName:
+          type: string
+        sourceUrl:
+          type: string
+        createdAt:
+          type: string
